@@ -2,10 +2,34 @@ import './App.css';
 
 import { useState } from 'react';
 
-export default function Board() {
-    const [squares, setSquares] = useState(Array(9).fill(null));
+export default function Game() {
     const [xIsNext, setXIsNext] = useState(true);
+    const [history, setHistory] = useState([Array(9).fill(null)])
+    const currentSquares = history[history.length - 1];
 
+    function handlePlay(nextSquares) {
+        setHistory([...history, nextSquares]);
+        setXIsNext(!xIsNext);
+    }
+
+    return (
+        <div className='game'>
+            <div className='game-board'>
+                <Board
+                    onPlay={handlePlay}
+                    squares={currentSquares}
+                    xIsNext={xIsNext}
+                />
+            </div>
+            <div className='game-info'>
+                <p>Game Info</p>
+                <ol>Coming soon</ol>
+            </div>
+        </div>
+    )
+}
+
+function Board({ squares, xIsNext, onPlay }) {
     const winner = calculateWinner(squares);
     let status = winner ? 'Winner: ' + winner 
                     : 'Next player: ' + (xIsNext ? 'X' 
@@ -15,17 +39,14 @@ export default function Board() {
         if (squares[i] || calculateWinner(squares)){
             return;
         }
-
         const nextSquares = squares.slice(); // creates a copy of the squares array
 
         nextSquares[i] = xIsNext ? 'X' : 'O';
-        // setValue('X')
-        setSquares(nextSquares);
-        setXIsNext(!xIsNext);
-    }
 
+        onPlay(nextSquares);
+    }
     return (
-        <div className='game'>
+        <div>
             <div className='status'>{status}</div>
             <div className='board-row'>
                 <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
@@ -51,6 +72,17 @@ export default function Board() {
         )
 }
 
+function Square({ value, onSquareClick }) {
+    return (
+        <button
+            className="square"
+            onClick={onSquareClick}
+        >
+            { value }
+        </button>
+    )
+}
+
 function calculateWinner(squares) {
     const lines = [
         [0, 1, 2],
@@ -69,18 +101,5 @@ function calculateWinner(squares) {
         }
     }
     return null;
-}
-
-function Square({ value, onSquareClick }) {
-    // const [value, setValue] = useState(null);
-    // }
-    return (
-        <button
-            className="square"
-            onClick={onSquareClick}
-        >
-            { value }
-        </button>
-    )
 }
 
