@@ -1,4 +1,4 @@
-import './App.css';
+import './index.css';
 
 import { useState } from 'react';
 
@@ -31,6 +31,9 @@ export default function Game() {
     return (
         <div className='game'>
             <div className='game-board'>
+                <p className='text-3x1 font-bold'>
+                    Welcome
+                </p>
                 <Board
                     onPlay={handlePlay}
                     squares={currentSquares}
